@@ -133,10 +133,11 @@
               <div class="form-group">
                 <label for="exampleFormControlSelect1">API endpoint</label>
                 <select class="form-control" name="endpoint" aria-describedby="endpoints_needed">
-                  <option>faircaptcha.sense.africa</option>
+                  <!-- <option value="https://salty-ocean-83073.herokuapp.com">Sense Africa (beta)</option>  -->
+                  <option value="http://localhost:8080">Sense Africa (beta)</option>
                 </select>
                 <small id="endpoints_needed" class="form-text text-muted">
-                  Do you run a trustworthy endpoint? <a href="#">Contact us</a> to be featured here.
+                  Do you run a trustworthy endpoint? <a href="mailto:faircaptcha@sense.africa">Contact us</a> to be featured here.
                 </small>
               </div>
               <div class="form-group">
@@ -247,16 +248,16 @@
     }
     function gen_keys(){
       if(localStorage.getItem("options") && !$("#key_display").val()) {
-        data = JSON.parse(localStorage.getItem("options"));
+        options = JSON.parse(localStorage.getItem("options"));
         $("#keys_loading").show();
-        /*
+        
         $.post(
-          "https://"+options.endpoint+"/register",
+          options.endpoint+"/register",
           options,
           function(data){
             console.log(data);
           },
-          "json")*/
+          "json")
 
         /*
         $.ajax({
@@ -278,6 +279,7 @@
         })
         */
 
+        /*
         const XHR = new XMLHttpRequest();
 
         let urlEncodedData = "",
@@ -302,6 +304,8 @@
 
         // Finally, send our data.
         XHR.send( urlEncodedData );
+        */
+
       }
     }
 
