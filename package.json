@@ -1,0 +1,13 @@
+{
+  "name": "faircaptcha.github.io",
+  "version": "1.0.0",
+  "description": "Stop bots and help make the web more inclusive.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "harry@sense.africa",
+  "license": "GPL-3.0-or-later"
+
+}
