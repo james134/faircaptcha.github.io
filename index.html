@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 
   <style>
-    body{padding-top: 50px;}
+    body{padding-top: 50px;scroll-behavior: smooth;}
     header{
       background:rgb(90,198,169);
       background: radial-gradient(circle at 80% 50%, rgba(60, 72, 88, 0.05) 0%, rgba(60, 72, 88, 0.05) 33.333%, rgba(206, 212, 218, 0.1) 33.333%, rgba(206, 212, 218, 0.1) 66.666%, rgba(73, 80, 87, 0.1) 66.666%, rgba(73, 80, 87, 0.1) 99.999%), linear-gradient(45deg, #00c9a7, #2d84fb)
@@ -43,25 +43,22 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container">
-      <a class="navbar-brand" href="#">Start Bootstrap</a>
+      <a class="navbar-brand" href="#footer"><img height="40" src="https://connect.sense.africa/images/logo-light.png"/></a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="#">Home
-              <span class="sr-only">(current)</span>
-            </a>
+            <a class="nav-link" href="#desc">Description</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">About</a>
+            <a class="nav-link" href="#howto">How-to</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Services</a>
+            <a class="nav-link" href="#demo">Demo</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Contact</a>
+            <a class="nav-link" href="mailto:faircaptcha@sense.africa">Contact</a>
           </li>
         </ul>
       </div>
@@ -85,7 +82,7 @@
 
     <div class="row">
       <div class="col-md-8 mb-5">
-        <h2>What is Faircaptcha</h2>
+        <h2 id="desc">What is Faircaptcha</h2>
         <ul class="nav nav-tabs" role="tablist">
           <li class="nav-item" role="presentation">
             <a class="nav-link active" href="#description" data-toggle="tab" role="tab" aria-controls="description" aria-selected="true" id="description-tab">Description</a>
@@ -105,7 +102,7 @@
           </div>
         </div>
         <br/>
-        <h2>Get Faircaptcha</h2>
+        <h2 id="how-to">Get Faircaptcha</h2>
         <ol class="nav nav-tabs" role="tablist">
           <li class="nav-item" role="presentation">
             <a class="nav-link active" href="#step1" data-toggle="tab" role="tab" aria-controls="step1" aria-selected="true" id="step1-tab">1: Options</a>
@@ -134,7 +131,7 @@
                 <label for="exampleFormControlSelect1">API endpoint</label>
                 <select class="form-control" name="endpoint" aria-describedby="endpoints_needed">
                   <option value="https://salty-ocean-83073.herokuapp.com">Sense Africa (beta)</option>
-                  <!-- <option value="http://localhost:8080">Sense Africa (beta)</option>  -->
+                  <!-- <option value="http://localhost:8080">Local server</option> -->
                 </select>
                 <small id="endpoints_needed" class="form-text text-muted">
                   Do you run a trustworthy endpoint? <a href="mailto:faircaptcha@sense.africa">Contact us</a> to be featured here.
@@ -189,21 +186,33 @@
         <!-- <a class="btn btn-primary btn-lg" href="#">Call to Action &raquo;</a>  -->
       </div>
       <div class="col-md-4 mb-5">
-        <h2>Demo</h2>
+        <h2 id="demo">Demo</h2>
         <hr>
-        <address>
-          <strong>Start Bootstrap</strong>
-          <br>3481 Melrose Place
-          <br>Beverly Hills, CA 90210
-          <br>
-        </address>
-        <address>
-          <abbr title="Phone">P:</abbr>
-          (123) 456-7890
-          <br>
-          <abbr title="Email">E:</abbr>
-          <a href="mailto:#">name@example.com</a>
-        </address>
+        <style>
+            #faircaptcha_icon{width:25px;height:25px;fill:#00c9a7;border:2px solid #00c9a7;border-radius:50%;padding: 5px;position:absolute;bottom:6px;left:5px}
+        </style>
+        <div id="box" style="font-family:arial;width:300px;height:300px;border:2px solid #e9ecef;border-radius:5px;border-bottom-left-radius: 25px;border-bottom-right-radius: 25px;color:black;font-size:16px;position:absolute;background:white;overflow:hidden">
+            <header style="width:100%;background:#e9ecef">
+                <p style="margin: 0;padding: 15px;">
+                    faircaptcha
+                    &nbsp;
+                    <b style="color:white;background:black;border-radius:50%;cursor:pointer;font-size: 12px;padding: 3px 6px 3px 6px;font-family: monospace;font-weight: normal;">?</b>
+                    <small style="float:right"><span style="color:#00c9a7">English</span> French</small>
+                </p>
+            </header>
+            <p style="margin: 0;padding: 10px;font-size: 12px;font-family: monospace;">Use the recording button below to record yourself saying the phrase in the box below.</p>
+            <div style="border:none;width:90%;margin-left:5%;height:60px;background:#e9ecef"></div>
+            <div style="width:100%;position:absolute;bottom:0;left:0;height:50px;border-top:2px solid #e9ecef;overflow:hidden" id="afrocaptcha_slider">
+                <div style="position:absolute;left:0;top:0;height:100%;width:50px;border-bottom-right-radius: 25px;border-top-right-radius: 25px"></div>
+            </div>
+            <em style="position: absolute;bottom: 16px;left:0;text-align: center;width: 100%;font-size: 14px;" id="afrocaptcha_text">
+                Touch / click icon to activate
+            </em>
+            <svg id="faircaptcha_icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1000 1000" enable-background="new 0 0 1000 1000" xml:space="preserve"><g><path d="M500,713.3c95.6,0,172.8-82,172.8-182.7v-338C672.8,92,595.6,10,500,10S327.2,92,327.2,192.7v338C327.2,631.3,404.4,713.3,500,713.3z"/><path d="M742.8,360v174.3c0,131.7-108.9,238.9-240.6,238.9S261.6,666,261.6,534.3V360H220v174.3c0,147,115.9,268.2,262.5,278.9v137.4H322.8V990H675v-39.4H524.1V813.3C668.4,802.5,780,681.3,780,534.3V360H742.8z"/></g></svg>
+        </div>
+    
+        <!-- inserting these scripts at the end to be able to use all the elements in the DOM -->
+        <script src="demo/demo.js"></script>
       </div>
     </div>
     <!-- /.row -->
@@ -212,9 +221,10 @@
   <!-- /.container -->
 
   <!-- Footer -->
-  <footer class="py-5 bg-dark">
-    <div class="container">
-      <p class="m-0 text-center text-white">Copyright &copy; Sense Africa 2020</p>
+  <footer id="footer"class="py-5 bg-light">
+    <div class="container text-right">
+      <p class="m-0 text-center" style="font-family:monospace">Copyright &copy; Sense Africa 2020</p>
+      <img height="60" src="https://connect.sense.africa/images/logo-dark.png"href="https://sense.africa"/>
     </div>
     <!-- /.container -->
   </footer>
