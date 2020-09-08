@@ -16,12 +16,13 @@ var audioContext; //new audio context to help us record
 var recordButton = document.getElementById("recordButton");
 var stopButton = document.getElementById("stopButton");
 
-var afrocaptcha_steps = 0; //mic not authorized
-var afrocaptcha_icon = document.getElementById("afrocaptcha_icon");
-var afrocaptcha_text = document.getElementById("afrocaptcha_text");
-var afrocaptcha_slider = document.getElementById("afrocaptcha_slider");
+var faircaptcha_steps = 0; //mic not authorized
+var faircaptcha_icon = document.getElementById("faircaptcha_icon");
+var faircaptcha_text = document.getElementById("faircaptcha_text");
+var faircaptcha_slider = document.getElementById("faircaptcha_slider");
+var faircaptcha_recorder;
 
-function afrocaptcha_nopropagate(event){
+function faircaptcha_nopropagate(event){
    var e = event || window.event;
     if(e){
         e.preventDefault && e.preventDefault();
@@ -31,8 +32,8 @@ function afrocaptcha_nopropagate(event){
     }
 }
 
-function afrocaptcha_start(event) {
-    afrocaptcha_nopropagate(event);
+function faircaptcha_start(event) {
+    faircaptcha_nopropagate(event);
     
 	__log("start called");
 
@@ -46,93 +47,98 @@ function afrocaptcha_start(event) {
     /*
     	We're using the standard promise based getUserMedia() 
     	https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
-	*/
+    */
+    
+    ++faircaptcha_steps;
+    let mic_auth = (faircaptcha_steps == 1); //step1 => check  mic authorized, no stream yet
+    console.log(mic_auth);
 
 	navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
-	    if (++afrocaptcha_steps == 1) { //step1 => mic authorized, no stream yet
+	    if (mic_auth) {
 	        //slide
 	        console.log('sliding');
-	        end_icon_left = afrocaptcha_slider.offsetWidth - 45;
+	        end_icon_left = faircaptcha_slider.offsetWidth - 45;
 	        num_steps = 10;
 	        diff = Math.round((end_icon_left - 5)/num_steps);
 	        tmp = 5; //start
 	        time = 0;
 	        
-	        afrocaptcha_icon.style.fill="white";
-	        afrocaptcha_icon.style.borderColor="white"
-	        afrocaptcha_slider.children[0].style.background="#00c9a7";
-	        afrocaptcha_text.style.visibility="hidden";
-	        afrocaptcha_text.style.color="white";
+	        faircaptcha_icon.style.fill="white";
+	        faircaptcha_icon.style.borderColor="white"
+	        faircaptcha_slider.children[0].style.background="#00c9a7";
+	        faircaptcha_text.style.visibility="hidden";
+	        faircaptcha_text.style.color="white";
 	        
 	        do {
 	            tmp = Math.min(tmp+diff, end_icon_left);
-	            setTimeout("afrocaptcha_icon.style.left='"+tmp+".px';afrocaptcha_slider.children[0].style.width='"+(tmp+45)+".px';", time+=20);
+	            setTimeout("faircaptcha_icon.style.left='"+tmp+".px';faircaptcha_slider.children[0].style.width='"+(tmp+45)+".px';", time+=20);
 	        } while (tmp < end_icon_left);
 	        tmp+=45
 	        do {
 	            tmp+=diff
-	            setTimeout("afrocaptcha_slider.children[0].style.width='"+tmp+".px';", time+=20);
-	        } while (tmp < (afrocaptcha_slider.offsetWidth+25));
-	        setTimeout("afrocaptcha_text.style.visibility='visible';", time);
+	            setTimeout("faircaptcha_slider.children[0].style.width='"+tmp+".px';", time+=20);
+	        } while (tmp < (faircaptcha_slider.offsetWidth+25));
+	        setTimeout("faircaptcha_text.style.visibility='visible';", time);
 	        
-	        afrocaptcha_text.innerHTML = "Hold to record";
-	        return;
-	    }
-	    
-		__log("getUserMedia() success, stream created, initializing WebAudioRecorder...");
-		
-		afrocaptcha_text.innerHTML = "Recording ...";
+	        faircaptcha_text.innerHTML = "Hold to record";    
+            __log("getUserMedia() success, stream created, initializing WebAudioRecorder...");
 
-		/*
-			create an audio context after getUserMedia is called
-			sampleRate might change after getUserMedia is called, like it does on macOS when recording through AirPods
-			the sampleRate defaults to the one set in your OS for your playback device
+            /*
+                create an audio context after getUserMedia is called
+                sampleRate might change after getUserMedia is called, like it does on macOS when recording through AirPods
+                the sampleRate defaults to the one set in your OS for your playback device
 
-		*/
-		audioContext = new AudioContext({sampleRate:8000});
+            */
+            audioContext = new AudioContext({sampleRate:8000});
 
-		//update the format 
-		__log("recording "+encodingType+" @ "+audioContext.sampleRate/1000+"kHz")
+            //update the format 
+            __log("recording "+encodingType+" @ "+audioContext.sampleRate/1000+"kHz")
 
-		//assign to gumStream for later use
-		gumStream = stream;
-		
-		/* use the stream */
-		input = audioContext.createMediaStreamSource(stream);
-		
-		//stop the input from playing back through the speakers
-		//input.connect(audioContext.destination)
+            //assign to gumStream for later use
+            gumStream = stream;
+            
+            /* use the stream */
+            input = audioContext.createMediaStreamSource(stream);
+            
+            //stop the input from playing back through the speakers
+            //input.connect(audioContext.destination)
 
-		recorder = new WebAudioRecorder(input, {
-		  workerDir: "demo/", // must end with slash
-		  encoding: encodingType,
-		  numChannels:2, //2 is the default, mp3 encoding supports only 2
-		  onEncoderLoading: function(recorder, encoding) {
-		    // show "loading encoder..." display
-		    __log("Loading "+encoding+" encoder...");
-		  },
-		  onEncoderLoaded: function(recorder, encoding) {
-		    // hide "loading encoder..." display
-		    __log(encoding+" encoder loaded");
-		  }
-		});
+            faircaptcha_recorder = new WebAudioRecorder(input, {
+                workerDir: "demo/", // must end with slash
+                encoding: encodingType,
+                numChannels:2, //2 is the default, mp3 encoding supports only 2
+                onEncoderLoading: function(recorder, encoding) {
+                    // show "loading encoder..." display
+                    __log("Loading "+encoding+" encoder...");
+                },
+                onEncoderLoaded: function(recorder, encoding) {
+                    // hide "loading encoder..." display
+                    __log(encoding+" encoder loaded");
+                }
+            });
 
-		recorder.onComplete = function(recorder, blob) { 
-			__log("Encoding complete");
-			createDownloadLink(blob,recorder.encoding);
-		}
+            faircaptcha_recorder.onComplete = function(recorder, blob) { 
+                __log("Encoding complete");
+                createDownloadLink(blob,recorder.encoding);
+            }
 
-		recorder.setOptions({
-		  timeLimit:120,
-		  encodeAfterRecord:encodeAfterRecord,
-	      ogg: {quality: 0.5},
-	      mp3: {bitRate: 160}
-	    });
+            faircaptcha_recorder.setOptions({
+                timeLimit:120,
+                encodeAfterRecord:encodeAfterRecord,
+                ogg: {quality: 0.5},
+                mp3: {bitRate: 160}
+            });
+            
+        }
+        else {
 
-		//start the recording process
-		recorder.startRecording();
+            faircaptcha_text.innerHTML = "Recording ...";
 
-		 __log("Recording started");
+            //start the recording process
+            faircaptcha_recorder.startRecording();
+
+            __log("Recording started");
+        }
 
 	}).catch(function(err) {
 	  	//enable the record button if getUSerMedia() fails
@@ -148,10 +154,10 @@ function afrocaptcha_start(event) {
     return false;
 }
 
-function afrocaptcha_stop(event) {
-    afrocaptcha_nopropagate(event);
+function faircaptcha_stop(event) {
+    faircaptcha_nopropagate(event);
     
-    if (afrocaptcha_steps == 1) {
+    if (faircaptcha_steps == 1) {
         return;
     }
 	__log("stop called");
@@ -159,7 +165,7 @@ function afrocaptcha_stop(event) {
 	//stop microphone access
 	gumStream.getAudioTracks()[0].stop();
 
-    afrocaptcha_text.innerHTML = "Hold icon to record";
+    faircaptcha_text.innerHTML = "Hold icon to record";
 	
 	//tell the recorder to finish the recording (stop recording + encode the recorded audio)
 	recorder.finishRecording();
@@ -167,10 +173,10 @@ function afrocaptcha_stop(event) {
 	__log('Recording stopped');
 }
 
-afrocaptcha_icon.ontouchstart =
-afrocaptcha_icon.onmousedown = afrocaptcha_start;
-afrocaptcha_icon.ontouchend =
-afrocaptcha_icon.onmouseup = afrocaptcha_stop;
+faircaptcha_icon.ontouchstart =
+faircaptcha_icon.onmousedown = faircaptcha_start;
+faircaptcha_icon.ontouchend =
+faircaptcha_icon.onmouseup = faircaptcha_stop;
 
 function createDownloadLink(blob,encoding) {
 	
@@ -195,5 +201,5 @@ function createDownloadLink(blob,encoding) {
 
 //helper function
 function __log(e, data) {
-	console.log('afrocaptcha: ' + e + " " + (data || ''));
+	console.log('faircaptcha: ' + e + " " + (data || ''));
 }
