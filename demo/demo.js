@@ -3,24 +3,16 @@
 //webkitURL is deprecated but nevertheless
 URL = window.URL || window.webkitURL;
 
-var gumStream; 						//stream from getUserMedia()
-var recorder; 						//WebAudioRecorder object
-var input; 							//MediaStreamAudioSourceNode  we'll be recording
-var encodingType = "wav"; 			//wav / ogg / mp3
-var encodeAfterRecord = true;       // when to encode
-
-// shim for AudioContext when it's not avb. 
-var AudioContext = window.AudioContext || window.webkitAudioContext;
-var audioContext; //new audio context to help us record
-
-var recordButton = document.getElementById("recordButton");
-var stopButton = document.getElementById("stopButton");
-
-var faircaptcha_steps = 0; //mic not authorized
+var faircaptcha_gumStream; 			        //stream from getUserMedia()
+var faircaptcha_recorder; 			        //WebAudioRecorder object
+var faircaptcha_input;                      //MediaStreamAudioSourceNode  we'll be recording
+var faircaptcha_encodingType = "wav";       //wav / ogg / mp3
+var faircaptcha_encodeAfterRecord = true;   // when to encode
+var faircaptcha_sampleRate = 8000;          //8KHz
+var faircaptcha_steps = 0;                  //mic not authorized
 var faircaptcha_icon = document.getElementById("faircaptcha_icon");
 var faircaptcha_text = document.getElementById("faircaptcha_text");
 var faircaptcha_slider = document.getElementById("faircaptcha_slider");
-var faircaptcha_recorder;
 
 function faircaptcha_nopropagate(event){
    var e = event || window.event;
@@ -35,7 +27,7 @@ function faircaptcha_nopropagate(event){
 function faircaptcha_start(event) {
     faircaptcha_nopropagate(event);
     
-	__log("start called");
+	faircaptcha_log("start called");
 
 	/*
 		Simple constraints object, for more advanced features see
@@ -81,7 +73,10 @@ function faircaptcha_start(event) {
 	        setTimeout("faircaptcha_text.style.visibility='visible';", time);
 	        
 	        faircaptcha_text.innerHTML = "Hold to record";    
-            __log("getUserMedia() success, stream created, initializing WebAudioRecorder...");
+            faircaptcha_log("getUserMedia() success, stream created, initializing WebAudioRecorder...");
+
+            // shim for AudioContext when it's not avb. 
+            AudioContext = window.AudioContext || window.webkitAudioContext;
 
             /*
                 create an audio context after getUserMedia is called
@@ -89,42 +84,42 @@ function faircaptcha_start(event) {
                 the sampleRate defaults to the one set in your OS for your playback device
 
             */
-            audioContext = new AudioContext({sampleRate:8000});
+            audioContext = new AudioContext({sampleRate:faircaptcha_sampleRate});
 
             //update the format 
-            __log("recording "+encodingType+" @ "+audioContext.sampleRate/1000+"kHz")
+            faircaptcha_log("recording "+faircaptcha_encodingType+" @ "+audioContext.sampleRate/1000+"kHz")
 
-            //assign to gumStream for later use
-            gumStream = stream;
+            //assign to faircaptcha_gumStream for later use
+            faircaptcha_gumStream = stream;
             
             /* use the stream */
-            input = audioContext.createMediaStreamSource(stream);
+            faircaptcha_input = audioContext.createMediaStreamSource(stream);
             
             //stop the input from playing back through the speakers
-            //input.connect(audioContext.destination)
+            //faircaptcha_input.connect(audioContext.destination)
 
             faircaptcha_recorder = new WebAudioRecorder(input, {
                 workerDir: "demo/", // must end with slash
-                encoding: encodingType,
+                encoding: faircaptcha_encodingType,
                 numChannels:2, //2 is the default, mp3 encoding supports only 2
                 onEncoderLoading: function(recorder, encoding) {
                     // show "loading encoder..." display
-                    __log("Loading "+encoding+" encoder...");
+                    faircaptcha_log("Loading "+encoding+" encoder...");
                 },
                 onEncoderLoaded: function(recorder, encoding) {
                     // hide "loading encoder..." display
-                    __log(encoding+" encoder loaded");
+                    faircaptcha_log(encoding+" encoder loaded");
                 }
             });
 
             faircaptcha_recorder.onComplete = function(recorder, blob) { 
-                __log("Encoding complete");
-                createDownloadLink(blob,recorder.encoding);
+                faircaptcha_log("Encoding complete");
+                faircaptcha_handleBlob(blob,recorder.encoding);
             }
 
             faircaptcha_recorder.setOptions({
                 timeLimit:120,
-                encodeAfterRecord:encodeAfterRecord,
+                encodeAfterRecord:faircaptcha_encodeAfterRecord,
                 ogg: {quality: 0.5},
                 mp3: {bitRate: 160}
             });
@@ -137,19 +132,13 @@ function faircaptcha_start(event) {
             //start the recording process
             faircaptcha_recorder.startRecording();
 
-            __log("Recording started");
+            faircaptcha_log("Recording started");
         }
 
 	}).catch(function(err) {
 	  	//enable the record button if getUSerMedia() fails
 
 	});
-
-	//disable the record button
-	/*
-    recordButton.disabled = true;
-    stopButton.disabled = false;
-    */
     
     return false;
 }
@@ -160,17 +149,17 @@ function faircaptcha_stop(event) {
     if (faircaptcha_steps == 1) {
         return;
     }
-	__log("stop called");
+	faircaptcha_log("stop called");
 	
 	//stop microphone access
-	gumStream.getAudioTracks()[0].stop();
+	faircaptcha_gumStream.getAudioTracks()[0].stop();
 
     faircaptcha_text.innerHTML = "Hold icon to record";
 	
 	//tell the recorder to finish the recording (stop recording + encode the recorded audio)
-	recorder.finishRecording();
+	faircaptcha_recorder.finishRecording();
 
-	__log('Recording stopped');
+	faircaptcha_log('Recording stopped');
 }
 
 faircaptcha_icon.ontouchstart =
@@ -178,7 +167,7 @@ faircaptcha_icon.onmousedown = faircaptcha_start;
 faircaptcha_icon.ontouchend =
 faircaptcha_icon.onmouseup = faircaptcha_stop;
 
-function createDownloadLink(blob,encoding) {
+function faircaptcha_handleBlob(blob,encoding) {
 	
 	var url = URL.createObjectURL(blob);
 	var au = document.createElement('audio');
@@ -197,9 +186,7 @@ function createDownloadLink(blob,encoding) {
 	document.body.appendChild(link);
 }
 
-
-
 //helper function
-function __log(e, data) {
+function faircaptcha_log(e, data) {
 	console.log('faircaptcha: ' + e + " " + (data || ''));
 }
