@@ -10,13 +10,13 @@ app.get('/', function (req, res) {
 });
 
 app.post('/register', function(request, response){
-    console.log("reg");
     response.header("Access-Control-Allow-Origin", "*");
     response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    console.log(request.body)
+    let kv = "";
     for (const key in request.body) {  
-        console.log(key+" : "+request.body[key])
+       kv += (key+" : "+request.body[key]+"\n")
     }
+    response.end(kv);
 });
 
 

@@ -72,7 +72,7 @@ function faircaptcha_start(event) {
 	        } while (tmp < (faircaptcha_slider.offsetWidth+25));
 	        setTimeout("faircaptcha_text.style.visibility='visible';", time);
 	        
-	        faircaptcha_text.innerHTML = "Hold to record";    
+	        faircaptcha_text.innerHTML = "Hold icon to record";    
             faircaptcha_log("getUserMedia() success, stream created, initializing WebAudioRecorder...");
 
             // shim for AudioContext when it's not avb. 
