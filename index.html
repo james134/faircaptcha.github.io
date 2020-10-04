@@ -131,7 +131,6 @@
                 <label for="exampleFormControlSelect1">API endpoint</label>
                 <select class="form-control" name="endpoint" aria-describedby="endpoints_needed">
                   <option value="https://salty-ocean-83073.herokuapp.com">Sense Africa (beta)</option>
-                  <!-- <option value="http://localhost:8080">Local server</option> -->
                 </select>
                 <small id="endpoints_needed" class="form-text text-muted">
                   Do you run a trustworthy endpoint? <a href="mailto:faircaptcha@sense.africa">Contact us</a> to be featured here.
@@ -169,14 +168,14 @@
             </div>
             <br/>
             <div class="form-group">
-              <textarea class="form-control" id="key_display" readonly rows="3" aria-describedby="copy_keys"></textarea>
+              <textarea class="form-control" id="key_display" readonly rows="5" aria-describedby="copy_keys" style="font-family: monospace;"></textarea>
               <small id="copy_keys" class="form-text text-muted">
                 <a href="javascript:copy_keys()">copy to clipboard</a>
               </small>
             </div>
             <br/>
             <div class="col-md-12 bg-light text-right">
-              <a href="#" class="btn btn-primary mb-2 disabled" role="button" aria-disabled="true">I have saved my keys</a>
+              <a href="#" id="keys_saved"class="btn btn-primary mb-2 disabled" role="button" aria-disabled="true">I have saved my keys</a>
             </div>
           </div>
           <div class="tab-pane fade" id="step3" role="tabpanel" aria-labelledby="step3-tab"></div>
@@ -242,6 +241,9 @@
   </footer>
 
   <script type="text/javascript">
+    var key_display = document.getElementById("key_display");
+    var generating_keys = false;
+
     function process_form(form)
     {
       if (form.terms.checked)
@@ -259,7 +261,7 @@
         }
         if (localStorage.getItem("options") != JSON.stringify(options)){
           localStorage.setItem("options", JSON.stringify(options));
-          $("#key_display").val();
+          key_display.value="";
         }
         activate_step(2);
       }
@@ -268,72 +270,55 @@
     function activate_step(step){
       $("#step"+step+"-tab").removeClass("disabled").click();
     }
+    function display_key(text, color){
+      key_display.style.color = color || "black";
+      key_display.value = text;
+    }
     function gen_keys(){
-      if(localStorage.getItem("options") && !$("#key_display").val()) {
+      if(localStorage.getItem("options")) {
         options = JSON.parse(localStorage.getItem("options"));
+        if (generating_keys || typeof(options.processed)!="undefined") return;
+
+        key_display.value="";
+        generating_keys=true;
         $("#keys_loading").show();
-        
         $.post(
           options.endpoint+"/register",
           options,
           function(data){
-            console.log(data);
+            var resp,
+            submitted_options = options;
+            try{
+              resp = JSON.parse(data)
+              if (typeof(resp)=="object"
+                && typeof(resp.key)=="string"
+                && typeof(resp.secret)=="string"){
+                //new account ok
+                submitted_options.processed = true;
+                localStorage.setItem("options", JSON.stringify(submitted_options))
+                display_key(JSON.stringify(resp,null,2));
+                $("#keys_saved").removeClass("disabled").attr({"href":"activate_step(3)"});
+              } else throw "Incorrect server response"
+            }
+            catch(err){
+              //account creation failed
+              display_key(err + "\nTry again later or switch endpoint", "red")
+            }   
           },
-          "json")
-
-        /*
-        $.ajax({
-          url: "https://"+options.endpoint+"/register",
-          type: "POST",
-          crossDomain: true,
-          data: localStorage.getItem("options"),
-          dataType: "json",
-          xhrFields: {
-              withCredentials: true
-          },
-          success: function (response) {
-            var resp = JSON.parse(response)
-            alert(resp.status);
-          },
-          error: function (xhr, status) {
-              alert("error");
-          }
-        })
-        */
-
-        /*
-        const XHR = new XMLHttpRequest();
-
-        let urlEncodedData = "",
-            urlEncodedDataPairs = [],
-            name;
-
-        for( name in data ) {
-          urlEncodedDataPairs.push( encodeURIComponent( name ) + '=' + encodeURIComponent( data[name] ) );
-        }
-        urlEncodedData = urlEncodedDataPairs.join( '&' ).replace( /%20/g, '+' );
-
-        XHR.addEventListener( 'load', function(event) {
-          alert( 'Yeah! Data sent and response loaded.' );
-        } );
-        XHR.addEventListener( 'error', function(event) {
-          alert( 'Oops! Something went wrong.' );
-        } );
-
-        // Set up our request
-        XHR.open( 'POST', "https://"+data.endpoint+"/register");
-        XHR.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
-
-        // Finally, send our data.
-        XHR.send( urlEncodedData );
-        */
+          "text")
+          .fail(function(){
+            display_key("Network error\nTry again later or switch endpoint", "red")
+          })
+          .always(function(){
+            $("#keys_loading").hide();
+            generating_keys=false;
+          })
 
       }
     }
 
     function copy_keys(){
-      var key_display = document.getElementById("key_display"),
-      message;
+      var message;
 
       if (key_display.value){
         key_display.select();
