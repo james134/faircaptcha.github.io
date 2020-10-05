@@ -1,8 +1,9 @@
 const express = require('express');
 const crypto = require("crypto");
-var app = express();
 const path = require('path');
-const { Pool, Client } = require('pg')
+const { Pool, Client } = require('pg');
+
+var app = express();
 const pool = new Pool({
   connectionString: process.env.PG_URI,
 })
