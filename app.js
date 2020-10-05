@@ -32,16 +32,22 @@ app.post('/register', function(request, response){
             "'{\""+ request.body.signals.split(',').join('","') +"\"}'",
             request.body.email.trim().toLowerCase()
         ]
-        pool.query(text, values, (err, res) => {
-            if (err) {
-                console.log(err.stack)
-                response.end(err.stack)
-            } else {
-                console.log(res.rows[0])
-                response.end(res.rows[0])
-            }
-            //pool.end()
-        })
+        try{
+            pool.query(text, values, (err, res) => {
+                if (err) {
+                    console.log(err.stack)
+                    response.end(err.stack)
+                } else {
+                    console.log(res.rows[0])
+                    response.end(res.rows[0])
+                }
+                //pool.end()
+            })
+        }
+        catch(err){
+            console.log(err.message);
+            response.end(err.message);
+        }
     } else response.end("");
 });
 
