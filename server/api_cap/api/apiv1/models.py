@@ -25,6 +25,7 @@ class ClientSite(models.Model):
     token = models.CharField(max_length=100, null=True)
     ip = models.CharField(max_length=100, null=False)
     score = models.FloatField(null=True)
+    text = models.CharField(max_length=100, null=True)
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)

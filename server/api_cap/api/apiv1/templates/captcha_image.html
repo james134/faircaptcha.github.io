@@ -1,0 +1,34 @@
+
+   <div>
+       <form >
+            <img src={{data.url}}>
+            <input  id = "text_cap" type="text">
+            <input  id = "token" class="d-none" type="text" value={{data.token}}>
+            <input  id = "client_key" class="d-none" type="text" value={{data.client_key}}>
+            <input  id = "ip" class="d-none" type="text" value={{data.ip}}>
+            <button id="send"> Send </button> 
+        </form>
+   </div>
+<script>
+  $("#send").click(
+    (event)=>
+    {
+        event.preventDefault();
+        $.ajax('http://127.0.0.1:8000/captcha/clientSite/', {
+                       type: 'POST',  // http method
+                       data: { 
+                           text : $("#text_cap").val(),
+                           token : $("#token").val(),
+                           client_key : $("#client_key").val(),
+                           ip :  $("#ip").val(),
+                       },  // data to submit
+                       success: function (data, status, xhr) {
+                        console.log("success")
+                       },
+                       error: function (jqXhr, textStatus, errorMessage) {
+                              console.log("error")
+                       }  });
+       }
+  )
+</script>
+
