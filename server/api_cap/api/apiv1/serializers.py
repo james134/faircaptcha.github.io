@@ -27,12 +27,18 @@ class ClientSerializer(serializers.HyperlinkedModelSerializer):
 class ClientSiteSerializer(serializers.HyperlinkedModelSerializer):
     token = serializers.CharField(
         max_length=68, read_only=True)
+    text = serializers.CharField(
+        max_length=68, read_only=True)
+    score = serializers.CharField(
+        max_length=68, read_only=True)
     class Meta:
         model = ClientSite
         fields = [
             'ip',
             'token',
             'client',
+            'score',
+            'text',
             'created',
             'modified'
         ]

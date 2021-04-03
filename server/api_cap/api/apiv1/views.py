@@ -46,67 +46,71 @@ class ClientViewSet(viewsets.ModelViewSet):
             return Response({"error": "url exist"}, status=200)
 
 class ClientSiteViewSet(viewsets.ViewSet):
+    serializer_class = ClientSiteSerializer
     def list(self, request):
         queryset = Client.objects.all()
         client= get_object_or_404(queryset, public_key=request.query_params.get('client'))
         print(client)
         if client is not None :
-            token = ''.join(random.choices(string.ascii_letters +
+            if request.query_params.get('type') =="audio":
+                token = ''.join(random.choices(string.ascii_letters +
+                 string.digits+string.punctuation, k = 15)) 
+                client_site =  ClientSite.objects.create(
+                    ip=request.query_params.get('ip'),
+                    token=token,
+                    client = client,
+                    score = 0
+                )
+                client_site.save()
+                serializer =  ClientSiteSerializer(client_site,context={'request': request})
+                return render(request, "captcha_audio.html")
+            if request.query_params.get('type') =="image": 
+                cap = gen_captcha_img()
+                token = ''.join(random.choices(string.ascii_letters +
                     string.digits+string.punctuation, k = 15)) 
-            client_site =  ClientSite.objects.create(
+                client_site =  ClientSite.objects.create(
                 ip=request.query_params.get('ip'),
                 token=token,
                 client = client,
+                text = cap["cap_text"],
                 score = 0
-            )
-            client_site.save()
-            serializer =  ClientSiteSerializer(client_site,context={'request': request})
-            if request.query_params.get('type') =="audio":
-                return render(request, "captcha_audio.html")
-            if request.query_params.get('type') =="image": 
-                data = {'url' :"http://127.0.0.1:8000/captcha_img/"+gen_captcha_img()+".png",
+                )
+                client_site.save()
+                serializer =  ClientSiteSerializer(client_site,context={'request': request})
+                data = {'url' :"http://127.0.0.1:8000/captcha_img/"+cap["name"]+".png",
                 'token' :token,'ip' :request.query_params.get('ip'),'client_key' : request.query_params.get('client')  }
                 return render(request,"captcha_image.html",{'data' : data})
         else : 
             return render(request, "")
 
-    def create(self, request):
+    def create(self, request, *args, **kwargs):
         print(request.data)
         queryset= Client.objects.all()
-        client= get_object_or_404(queryset, public_key= request.data["client"])
+        client= get_object_or_404(queryset, public_key= request.data["client_key"])
         print(client)
         if client is not None :
-            token = ''.join(random.choices(string.ascii_letters +
-                                string.digits+string.punctuation, k = 15)) 
-            client_site =  ClientSite.objects.create(
-                ip=request.data["ip"],
-                token=token,
-                client = client,
-                score = 0
-            )
-            client_site.save()
+            client_site = ClientSite.objects.get(token= request.data["token"],ip=request.data["ip"])
             serializer =  ClientSiteSerializer(client_site,context={'request': request})
-            return Response({"error" :"you don't have access"}, status=200)
+            if(serializer.data["text"] == request.data["text"]):
+                client_site.score = 1.0
+                client_site.save()
+                print("c'est moi le bon")
+            return Response({"ip":(serializer.data)['ip'],"token":(serializer.data)['token']}, status=200)
         else : 
             return Response({"error" :"you don't have access"}, status=401)
         
-
 class SignalViewSet(viewsets.ModelViewSet):
     queryset = Signal.objects.all()
     serializer_class = SignalSerializer
 
-""" class CaptchaAudio(APIView):
-    renderer_classes = [TemplateHTMLRenderer]
-    template_name = 'captcha_audio.html'
-    def create (self, request):
-        print(1)
-        queryset = Client.objects.all()
-        client= get_object_or_404(queryset, public_key=request.query_params.get('client'))
-        print(client)
-        if client is not None :
-            return Response({"da":"efe"},status =200)
-        else : 
-            return Response({"da":"efe"},status =404)
-
-   
- """
+@api_view(['POST'])
+def getScoreClient(request):
+    queryset = Client.objects.all()
+    client= get_object_or_404(queryset, public_key=request.data['client'], secret_key=request.data['secret_key'])
+    print(client)
+    if client is not None :
+        client_site = ClientSite.objects.get(token= request.data["token"],ip=request.data["ip"])
+        serializer =  ClientSiteSerializer(client_site,context={'request': request})
+        return Response({"ip":(serializer.data)['ip'],"token":(serializer.data)['token'],"score":(serializer.data)['score']}, status=200)
+    else : 
+        return Response({"error" :"you don't have access"}, status=401)

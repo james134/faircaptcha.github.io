@@ -67,7 +67,7 @@ def gen_captcha_img():
     name = random_name()
     # save image in captcha_img directory
     img.save("./captcha_img/"+name +".png")
-    return name 
+    return {"name" : name, "cap_text" : captcha_str}
     
 
 
