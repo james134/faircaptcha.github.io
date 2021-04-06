@@ -125,6 +125,13 @@
                 </small>
               </div>
               <div class="form-group">
+                <label for="exampleFormControlInput2">url of your site</label>
+                <input type="url" class="form-control" name="url" placeholder="https://sense_afria.cm" aria-describedby="url_explain" required>
+                <small id="url_explain" class="form-text text-muted">
+                  for identified user
+                </small>
+              </div>
+              <div class="form-group">
                 <label for="exampleFormControlSelect1">API endpoint</label>
                 <select class="form-control" name="endpoint" aria-describedby="endpoints_needed">
                   <option value="https://salty-ocean-83073.herokuapp.com">Sense Africa (beta)</option>
@@ -247,15 +254,17 @@
       {
         let options={
           email:form.email.value,
+          url:form.url.value,
           endpoint:form.endpoint.value,
           signals:[]
         };
         let i=0;
         for(i=0;i<form.signals.options.length;i++){
           if (form.signals.options[i].selected){
-            options.signals.push(form.signals.options[i].value)
+            options.signals.push(i+1)
           }
         }
+        console.log(options.signalsé)
         if (localStorage.getItem("options") != JSON.stringify(options)){
           localStorage.setItem("options", JSON.stringify(options));
           key_display.value="";
@@ -280,12 +289,13 @@
         generating_keys=true;
         $("#keys_loading").show();
         $.post(
-          options.endpoint+"/register",
+          "http://127.0.0.1:8000/captcha/client/",
           options,
           function(data){
             var resp,
             submitted_options = options;
             try{
+              console.log(data)
               resp = JSON.parse(data)
               if (typeof(resp)=="object"
                 && typeof(resp.key)=="string"
@@ -294,7 +304,7 @@
                 submitted_options.processed = true;
                 localStorage.setItem("options", JSON.stringify(submitted_options))
                 display_key(JSON.stringify(resp,null,2));
-                $("#keys_saved").removeClass("disabled").attr({"href":"activate_step(3)"});
+                $("#keys_saved").removeClass("disabled");
               } else throw "Incorrect server response"
             }
             catch(err){
@@ -335,6 +345,13 @@
           $('#copy_keys a').tooltip('hide')
         }, 2000);
     }
+
+    $("#keys_saved").click(
+    (event)=>
+    {
+        event.preventDefault();
+        activate_step(3);
+    })
   </script>
 
   <!-- Bootstrap core JavaScript -->

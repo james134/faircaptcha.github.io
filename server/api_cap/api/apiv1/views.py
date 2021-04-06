@@ -27,9 +27,7 @@ class ClientViewSet(viewsets.ModelViewSet):
         serializer = ClientSerializer(query,many = True, context={"request": request})
         clientT = serializer.data
         print(clientT)
-        print (2)
         if clientT==[]:
-            print (3)
             client = Client.objects.create(
                 url=request.data["url"],
                 public_key=''.join(random.choices(string.ascii_letters +
@@ -37,11 +35,15 @@ class ClientViewSet(viewsets.ModelViewSet):
                 secret_key = ''.join(random.choices(string.ascii_uppercase +
                              string.digits+string.punctuation, k = 30))
             )
-            client.signals.set([3])
-            #request.data["signals"]
+            signals = [] 
+            for signal in (request.data).getlist("signals[]"):
+                print(signal)
+                signals.append(int(signal))
+                print(signals)
+            client.signals.set(signals)
             client.save()
             serializer = ClientSerializer(client,context={'request': request})
-            return Response(serializer.data, status=200)
+            return Response({"key":serializer.data["public_key"], "secret" : serializer.data["secret_key"]}, status=200)
         else : 
             return Response({"error": "url exist"}, status=200)
 
