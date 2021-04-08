@@ -36,13 +36,13 @@ class SiteViewSet(viewsets.ModelViewSet):
                 secret_key = ''.join(random.choices(string.ascii_letters+
                              string.digits, k = 64))
             )
-            signals = request.data).getlist("signals[]")
+            signals = (request.data).getlist("signals[]")
             site.signals.set(signals)
             site.save()
             serializer = SiteSerializer(site,context={'request': request})
-            return Response({"key":serializer.data["public_key"], "secret" : serializer.data["secret_key"]}, status=200)
+            return Response({"api_key":serializer.data["public_key"], "secret" : serializer.data["secret_key"]}, status=200)
         else : 
-            return Response({"error": "url exist"}, status=200)
+            return Response({"error": "la combinaison email and url existe déjà"}, status=200)
 
 class VisitorViewSet(viewsets.ViewSet):
     serializer_class = VisitorSerializer
