@@ -11,6 +11,7 @@
   "license": "GPL-3.0-or-later",
   "dependencies": {
     "express": "^4.17.1",
+    "nodemailer": "^6.4.13",
     "pg": "8.4.0"
   }
 }

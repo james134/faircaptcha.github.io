@@ -40,7 +40,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container">
-      <a class="navbar-brand" href="#footer"><img height="40" src="https://connect.sense.africa/images/logo-light.png"/></a>
+      <a class="navbar-brand" href="#footer"><img height="40" src="https://naruto.voi.ci/images/logo-light.png"/></a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -134,6 +134,7 @@
               <div class="form-group">
                 <label for="exampleFormControlSelect1">API endpoint</label>
                 <select class="form-control" name="endpoint" aria-describedby="endpoints_needed">
+                  <option value="http://127.0.0.1:8080">Localhost</option>
                   <option value="https://salty-ocean-83073.herokuapp.com">Sense Africa (beta)</option>
                 </select>
                 <small id="endpoints_needed" class="form-text text-muted">
@@ -239,7 +240,7 @@
   <footer id="footer"class="py-5 bg-light">
     <div class="container text-right">
       <p class="m-0 text-center" style="font-family:monospace">Copyright &copy; Sense Africa 2020</p>
-      <img height="60" src="https://connect.sense.africa/images/logo-dark.png"href="https://sense.africa"/>
+      <img height="60" src="https://naruto.voi.ci/images/logo-dark.png"href="https://sense.africa"/>
     </div>
     <!-- /.container -->
   </footer>
@@ -292,13 +293,12 @@
           "http://127.0.0.1:8000/captcha/client/",
           options,
           function(data){
-            var resp,
-            submitted_options = options;
+            var submitted_options = options;
             try{
               console.log(data)
-              resp = JSON.parse(data)
+              let resp = JSON.parse(data);
               if (typeof(resp)=="object"
-                && typeof(resp.key)=="string"
+                && typeof(resp.api_key)=="string"
                 && typeof(resp.secret)=="string"){
                 //new account ok
                 submitted_options.processed = true;
