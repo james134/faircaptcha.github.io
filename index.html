@@ -180,7 +180,7 @@
             </div>
             <br/>
             <div class="col-md-12 bg-light text-right">
-              <a href="#" id="keys_saved"class="btn btn-primary mb-2 disabled" role="button" aria-disabled="true">I have saved my keys</a>
+              <a href="#" id="keys_saved"class="btn btn-primary mb-2 disabled" role="button" aria-disabled="true"onclick="keysAreSaved(event)">I have saved my keys</a>
             </div>
           </div>
           <div class="tab-pane fade" id="step3" role="tabpanel" aria-labelledby="step3-tab"></div>
@@ -346,12 +346,10 @@
         }, 2000);
     }
 
-    $("#keys_saved").click(
-    (event)=>
-    {
+    keysAreSaved = function(event){
         event.preventDefault();
         activate_step(3);
-    })
+    }
   </script>
 
   <!-- Bootstrap core JavaScript -->

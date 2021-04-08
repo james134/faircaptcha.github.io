@@ -98,7 +98,7 @@ function faircaptcha_start(event) {
             //stop the input from playing back through the speakers
             //faircaptcha_input.connect(audioContext.destination)
 
-            faircaptcha_recorder = new WebAudioRecorder(input, {
+            faircaptcha_recorder = new WebAudioRecorder(faircaptcha_input, {
                 workerDir: "demo/", // must end with slash
                 encoding: faircaptcha_encodingType,
                 numChannels:2, //2 is the default, mp3 encoding supports only 2
