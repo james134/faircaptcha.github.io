@@ -5,11 +5,11 @@ from rest_framework import routers
 from . import views
 
 routers = routers.DefaultRouter()
-routers.register(r'client', views.ClientViewSet)
-routers.register(r'clientSite', views.ClientSiteViewSet, basename= "clientSite")
+routers.register(r'client', views.SiteViewSet)
+routers.register(r'clientSite', views.VisitorViewSet, basename= "clientSite")
 routers.register(r'signal', views.SignalViewSet)
 
 urlpatterns = [
     path('', include(routers.urls)),
-    path('getScore/', views.getScoreClient)
+    path('getScore/', views.getScoreVisitor)
 ]

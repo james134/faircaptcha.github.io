@@ -6,13 +6,13 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import smart_str, force_str, smart_bytes, DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
-class ClientSerializer(serializers.HyperlinkedModelSerializer):
+class SiteSerializer(serializers.HyperlinkedModelSerializer):
     public_key = serializers.CharField(
         max_length=68, read_only=True)
     secret_key = serializers.CharField(
         max_length=68, read_only=True)
     class Meta:
-        model = Client
+        model = Site
         fields = [
             'id',
             'url',
@@ -24,7 +24,7 @@ class ClientSerializer(serializers.HyperlinkedModelSerializer):
         ]
 
 
-class ClientSiteSerializer(serializers.HyperlinkedModelSerializer):
+class VisitorSerializer(serializers.HyperlinkedModelSerializer):
     token = serializers.CharField(
         max_length=68, read_only=True)
     text = serializers.CharField(
@@ -32,11 +32,11 @@ class ClientSiteSerializer(serializers.HyperlinkedModelSerializer):
     score = serializers.CharField(
         max_length=68, read_only=True)
     class Meta:
-        model = ClientSite
+        model = Visitor
         fields = [
             'ip',
             'token',
-            'client',
+            'site',
             'score',
             'text',
             'created',
@@ -49,6 +49,7 @@ class SignalSerializer(serializers.HyperlinkedModelSerializer):
         model = Signal
         fields = [
             'name',
+            'description',
             'created',
             'modified'
         ]
