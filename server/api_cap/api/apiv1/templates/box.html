@@ -1,0 +1,374 @@
+{% load static%}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+{% if data.signaux.request%}
+<script> 
+var addressIpAndMetaData={};
+$(document).ready(function () {
+    $.get("http://ipinfo.io", function(response) {
+        addressIpAndMetaData = response;
+        console.log(response)
+    }, "jsonp");
+})
+</script>
+{% endif %}
+{% if data.signaux.device%}
+<script>
+    var  deviceCaracteristic ;
+    $(document).ready(function () {
+            agent = {browser:{name:null,version:null,v:null,userAgent:null,app:null,os:null},mobile:false,pointlock:false};
+            var nVer = navigator.appVersion;
+            var nAgt = navigator.userAgent;
+            var browserName  = navigator.appName;
+            var fullVersion  = ''+parseFloat(navigator.appVersion); 
+            var majorVersion = parseInt(navigator.appVersion,10);
+            var nameOffset,verOffset,ix;
+            agent.pointlock = 'pointerLockElement' in document ||
+                'mozPointerLockElement' in document ||
+                'webkitPointerLockElement' in document;
+
+            // In Opera, the true version is after "Opera" or after "Version"
+            if ((verOffset=nAgt.indexOf("Opera"))!=-1) {
+            browserName = "Opera";
+            fullVersion = nAgt.substring(verOffset+6);
+            if ((verOffset=nAgt.indexOf("Version"))!=-1) 
+            fullVersion = nAgt.substring(verOffset+8);
+            }
+            // In MSIE, the true version is after "MSIE" in userAgent
+            else if ((verOffset=nAgt.indexOf("MSIE"))!=-1) {
+            browserName = "Microsoft Internet Explorer";
+            fullVersion = nAgt.substring(verOffset+5);
+            }
+            // In Chrome, the true version is after "Chrome" 
+            else if ((verOffset=nAgt.indexOf("Chrome"))!=-1) {
+            browserName = "Chrome";
+            fullVersion = nAgt.substring(verOffset+7);
+            }
+            // In Safari, the true version is after "Safari" or after "Version" 
+            else if ((verOffset=nAgt.indexOf("Safari"))!=-1) {
+            browserName = "Safari";
+            fullVersion = nAgt.substring(verOffset+7);
+            if ((verOffset=nAgt.indexOf("Version"))!=-1) 
+            fullVersion = nAgt.substring(verOffset+8);
+            }
+            // In Firefox, the true version is after "Firefox" 
+            else if ((verOffset=nAgt.indexOf("Firefox"))!=-1) {
+            browserName = "Firefox";
+            fullVersion = nAgt.substring(verOffset+8);
+            }
+            // In most other browsers, "name/version" is at the end of userAgent 
+            else if ( (nameOffset=nAgt.lastIndexOf(' ')+1) < 
+                    (verOffset=nAgt.lastIndexOf('/')) ) 
+            {
+            browserName = nAgt.substring(nameOffset,verOffset);
+            fullVersion = nAgt.substring(verOffset+1);
+            if (browserName.toLowerCase()==browserName.toUpperCase()) {
+            browserName = navigator.appName;
+            }
+            }
+            // trim the fullVersion string at semicolon/space if present
+            if ((ix=fullVersion.indexOf(";"))!=-1)
+            fullVersion=fullVersion.substring(0,ix);
+            if ((ix=fullVersion.indexOf(" "))!=-1)
+            fullVersion=fullVersion.substring(0,ix);
+
+            majorVersion = parseInt(''+fullVersion,10);
+            if (isNaN(majorVersion)) {
+            fullVersion  = ''+parseFloat(navigator.appVersion); 
+            majorVersion = parseInt(navigator.appVersion,10);
+            }
+            agent.browser.name = browserName;
+            agent.browser.version = fullVersion;
+            agent.browser.v = majorVersion;
+            agent.browser.app = navigator.appName;
+            agent.browser.userAgent = navigator.userAgent;
+            var OSName="Unknown OS";
+            if (navigator.appVersion.indexOf("Win")!=-1) OSName="Windows";
+            if (navigator.appVersion.indexOf("Mac")!=-1) OSName="MacOS";
+            if (navigator.appVersion.indexOf("X11")!=-1) OSName="UNIX";
+            if (navigator.appVersion.indexOf("Linux")!=-1) OSName="Linux";
+            agent.browser.os = OSName;
+            agent.mobile = (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+            console.log(agent);
+            deviceCaracteristic=agent;
+        })
+</script>
+{% endif %}
+{% if data.signaux.behavior%}
+<script>
+    $(document).ready(function () {
+    //enrégister les positions de la souris 
+        positions  = [] ; 
+        countClick = [] 
+        prevDate= 0
+        jQuery(function($) {
+            $(document).mousemove(function(event) {
+                d= new Date()
+                if(d.getTime()-prevDate>4000)
+                {
+                x = event.pageX;
+                y = event.pageY;
+                time= d.getTime()
+                positions.push({x,y,time})
+                console.log("p",positions)
+                prevDate= d.getTime()
+                }
+            });
+    });
+    // compter le nombre de click à l'écran 
+    d= new Date()
+    time = d.getTime()
+    prevDate = 0
+    jQuery(document).on('click',function(){
+        d1= new Date()
+        time1 = d1.getTime()
+        x = event.pageX;
+        y = event.pageY;
+        countClick.push({x,y,time1})
+        console.log("c",countClick)
+    })
+    screenSize = [{"width" :$(window).width(), "heigth" : $(window).height(),time}]
+    $(window).resize(function(){
+        da= new Date()
+        if(da.getTime()-prevDate>1000)
+        {
+            time = da.getTime()
+            s = {"width" :$(window).width(), "heigth" : $(window).height(),time}
+            screenSize.push(s)
+            prevDate =time
+            console.log(screenSize)
+        }
+    });
+     
+    //save scroll 
+    scrollTable = [] ;
+    $(document).scroll(function(e) { 
+        sct = $(document).scrollTop()
+        scrollTable.push({sct,time})
+    });
+    })
+</script>
+{% endif %}
+    
+{% if data.signaux.cookie%}
+<script>
+$(document).ready(function () {
+    browser = new Array()
+    if(!localStorage.getItem("cookie"))
+    {
+        $.ajax('http://127.0.0.1:8000/captcha/getCookie/', {
+            type: 'POST',
+            data: { 
+                data : data,
+                token : $("#token").val(),
+                client_key : $("#client_key").val(),
+            },
+            success: (data, status, xhr) => {
+            console.log(data)
+            localStorage.setItem("cookie",data["cookie"]);
+            },
+            error: function (jqXhr, textStatus, errorMessage) {
+        }});
+    }
+    lastUrl = ""
+        if(localStorage.getItem("browser"))
+           {
+            browser = JSON.parse(localStorage.getItem("browser"))
+            for(var i = 0; i < browser.length ; i++){
+            console.log(browser[i])
+            }
+            lastUrl = browser[browser.length-1]["url"]    
+            console.log("last", lastUrl)
+           }
+        else
+        {
+            data =  {
+            "time" : $.now(),
+            "action" : lastUrl==window.location.href?"active":"load",
+            "screenWidth" : $(window).width(),
+            "screenheigth" :$(window).height(),
+            "url" : window.location.href
+        }
+            browser.push(data)
+            localStorage.setItem("browser",JSON.stringify(browser));
+            lastUrl = window.location.href
+        }
+           
+    getData = function ()
+    {   
+
+        browser = JSON.parse(localStorage.getItem("browser"))
+        d2= new Date()
+        time2 = d2.getTime()
+        data =
+        {
+            "time" : time2,
+            "action" : lastUrl==window.location.href?"active":"load",
+            "screenWidth" : $(window).width(),
+            "screenheigth" :$(window).height(),
+            "url" : window.location.href
+        }
+        if(lastUrl==window.location.href)
+        {
+            if(browser[browser.length-1]["action"]=="active")
+            {
+                browser.pop();
+            }
+            browser.push(data);
+            localStorage.setItem("browser",JSON.stringify(browser));
+            for(var i = 0; i < browser.length ; i++){
+            console.log("t",i,browser[i])
+            }
+        }
+        else{
+            browser.push(data)
+            localStorage.setItem("browser",JSON.stringify(browser));
+        }
+        lastUrl = browser[browser.length-1]["url"]
+    }
+    setInterval(getData,10000)
+})
+</script>
+{% endif %}
+    <div id="cap_test" class="card" style="width: 18rem;">
+        <div class="card-body">
+            <div class="row" style="align-items: center;justify-content: center;">
+                <div class="form-check form-check-inline">
+                    <div class="form-group mb-0">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="check_box">
+                            <label class="custom-control-label" for="check_box">I'm not a robot</label>
+                        </div>
+                        <div id="load" class="spinner-border text-success" role="status" style="color:#00c9a7 !important; display: none">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+                  <div>
+                    <img height="60"  src="https://naruto.voi.ci/images/logo-dark.png"href="https://sense.africa"/>
+                  </div> 
+                <div>
+                    <input  id = "token" class="d-none" type="text" value={{data.token}}>
+                    <input  id = "client_key" class="d-none" type="text" value={{data.client_key}}>
+                </div>
+            </div>
+        </div> 
+    </div>
+    <div id="cap" class="container" style="display: none; width:22rem ; flex-direction: column;" >
+            <small style="text-align: end; margin-right: 4%; color:#00c9a7 ; cursor: pointer;" id="changeCaptcha">change the type of captcha</small>
+            <div id="audio" style="display: none;">
+            </div>
+            <div id="image" style="display: none;">
+            </div>
+    </div> 
+   
+<script type="text/javascript" >
+    var data =  {}
+    isCaptchaAudio= true
+    $("#check_box").change(function() {
+        if(this.checked) {
+        $(".custom-checkbox").css("display","none");
+        $("#load").css("display","block");     
+    if ('{{data.signaux.request }}') {
+        data["request"] = JSON.stringify(addressIpAndMetaData);
+    }
+    if('{{data.signaux.device}}')
+    {
+        data["device"] = JSON.stringify(deviceCaracteristic)
+    }
+    if('{{data.signaux.behavior}}')
+    {
+        scrollAndBehavior = {}
+        scrollAndBehavior["positions"] = JSON.stringify(positions);
+        scrollAndBehavior["click"] = JSON.stringify(countClick);
+        scrollAndBehavior["screenSize"] = JSON.stringify(screenSize);
+        scrollAndBehavior["scroll"] = JSON.stringify(scrollTable);
+        data["behavior"] = JSON.stringify(scrollAndBehavior)
+    }
+    $.ajax('http://127.0.0.1:8000/captcha/getFirstScore/', {
+            type: 'POST',
+            data: { 
+                data : data,
+                token : $("#token").val(),
+                client_key : $("#client_key").val(),
+                ip_client :addressIpAndMetaData.ip,
+            },
+            success: (data, status, xhr) => {
+            console.log(data)
+            if(!data["score"])
+            {
+                $.ajax('http://127.0.0.1:8000/captcha/clientSite/?type=audio',{
+                type: "GET",
+                data : {
+                token : $("#token").val(),
+                client_key : $("#client_key").val(),
+            },
+            success: function(response) {
+                    $("#audio").append(response);
+                    $("#cap").css("display","flex");
+                    $("#audio").css("display","block");   
+                    $("#cap_test").css("display","none");  
+                }});
+                }
+            },
+            error: function (jqXhr, textStatus, errorMessage) {
+                console.log("error")
+                $( "#check_box" ).prop( "checked", false );
+                $(".custom-checkbox").css("display","block");
+                $("#load").css("display","none"); 
+        }});
+};
+
+if('{{data.signaux.cookie}}')
+    {
+        $.ajax('http://127.0.0.1:8000/captcha/getCookieData/', {
+            type: 'POST',
+            data: { 
+                data : localStorage.getItem("browser"),
+                cookie : localStorage.getItem("cookie"),
+                client_key : $("#client_key").val(),
+                ip_client :addressIpAndMetaData.ip,
+            },
+            success: (data, status, xhr) => {
+                console.log(data)
+            },
+            error: function (jqXhr, textStatus, errorMessage) {
+                console.log("error")
+        }});
+    }
+})
+$("#changeCaptcha").click(
+    (event)=>
+    {
+        isCaptchaAudio = !isCaptchaAudio
+        type = isCaptchaAudio?"audio":"image"
+        $.ajax('http://127.0.0.1:8000/captcha/clientSite/?type='+type,{
+                type: "GET",
+                data : {
+                token : $("#token").val(),
+                client_key : $("#client_key").val(),
+            },
+            success: function(response) {
+                if(isCaptchaAudio)
+                {
+                    $("#audio").append(response);
+                    $("#cap").css("display","flex");
+                    $("#audio").css("display","block");   
+                    $("#cap_test").css("display","none");
+                    $("#image").css("display","none");
+                    $("#image").empty();
+                }else
+                {
+                    $("#image").append(response);
+                    $("#cap").css("display","flex");
+                    $("#image").css("display","block");   
+                    $("#cap_test").css("display","none");
+                    $("#audio").css("display","none");
+                    $("#audio").empty();
+                    
+                } 
+                }});
+    }
+)
+</script>

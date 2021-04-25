@@ -262,7 +262,7 @@
         let i=0;
         for(i=0;i<form.signals.options.length;i++){
           if (form.signals.options[i].selected){
-            options.signals.push(i+1)
+            options.signals.push(form.signals.options[i].value)
           }
         }
         console.log(options.signalsé)
@@ -290,7 +290,7 @@
         generating_keys=true;
         $("#keys_loading").show();
         $.post(
-          "http://127.0.0.1:8000/captcha/client/",
+          "http://127.0.0.1:8000/captcha/site/",
           options,
           function(data){
             var submitted_options = options;

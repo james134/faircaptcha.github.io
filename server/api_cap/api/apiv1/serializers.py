@@ -6,7 +6,8 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import smart_str, force_str, smart_bytes, DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
-class SiteSerializer(serializers.HyperlinkedModelSerializer):
+class SiteSerializer(serializers.ModelSerializer):
+    signals = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     public_key = serializers.CharField(
         max_length=68, read_only=True)
     secret_key = serializers.CharField(
@@ -31,6 +32,8 @@ class VisitorSerializer(serializers.HyperlinkedModelSerializer):
         max_length=68, read_only=True)
     score = serializers.CharField(
         max_length=68, read_only=True)
+    audio = serializers.FileField(
+        max_length=68, read_only=True)
     class Meta:
         model = Visitor
         fields = [
@@ -39,6 +42,8 @@ class VisitorSerializer(serializers.HyperlinkedModelSerializer):
             'site',
             'score',
             'text',
+            'audio',
+            'cookie',
             'created',
             'modified'
         ]
@@ -52,4 +57,12 @@ class SignalSerializer(serializers.HyperlinkedModelSerializer):
             'description',
             'created',
             'modified'
+        ]
+
+class PhrasesSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Phrases
+        fields = [
+            'id',
+            'intitule',
         ]

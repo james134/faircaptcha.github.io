@@ -5,6 +5,10 @@ from .models import *
 class SignalAdmin(admin.ModelAdmin):
     list_display = ['name','description', 'created', 'modified']
 
+@admin.register(Phrases)
+class PhrasesAdmin(admin.ModelAdmin):
+    list_display = ['id','intitule']
+
 @admin.register(Site)
 class SiteAdmin(admin.ModelAdmin):
     list_display = ['url', 'email','public_key', 'secret_key', 'created','modified']

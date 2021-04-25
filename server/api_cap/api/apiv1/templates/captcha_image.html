@@ -1,14 +1,16 @@
 
-   <div>
+<div style="font-family:arial;width:300px;height:100px;border:2px solid #e9ecef;border-radius:5px;border-bottom-left-radius: 5px;border-bottom-right-radius: 5px;color:black;font-size:16px;position:absolute;background:white;overflow:hidden">
        <form >
-            <img src={{data.url}}>
-            <input  id = "text_cap" type="text">
+            <img src={{data.url}} style="margin: 0%;">
             <input  id = "token" class="d-none" type="text" value={{data.token}}>
             <input  id = "client_key" class="d-none" type="text" value={{data.client_key}}>
             <input  id = "ip" class="d-none" type="text" value={{data.ip}}>
-            <button id="send"> Send </button> 
+            <div  style="display: flex; flex-direction: row;justify-content: center; text-align: center;align-items: center;">
+              <input  id = "text_cap" type="text" style="width: 70%;height: 45px !important;border-bottom-left-radius: 5px;border-color: #00c9a7;">
+              <button id="send" style="width: 30%; height: 45px !important;border-bottom-right-radius: 5px;"> Send </button> 
+            </div> 
         </form>
-   </div>
+</div>
 <script>
   $("#send").click(
     (event)=>
@@ -20,10 +22,11 @@
                            text : $("#text_cap").val(),
                            token : $("#token").val(),
                            client_key : $("#client_key").val(),
-                           ip :  $("#ip").val(),
+                           type :"image"
                        },  // data to submit
                        success: function (data, status, xhr) {
                         console.log(data)
+                        $("#cap").css("display","none");
                        },
                        error: function (jqXhr, textStatus, errorMessage) {
                               console.log("error")

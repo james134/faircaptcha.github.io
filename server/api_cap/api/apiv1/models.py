@@ -25,12 +25,18 @@ class Site(models.Model):
 
 class Visitor(models.Model):
     token = models.CharField(max_length=100, null=True)
-    ip = models.CharField(max_length=100, null=False)
+    ip = models.CharField(max_length=100, null=True)
+    audio = models.FileField(null=True, upload_to="./captcha_img/")
     score = models.FloatField(null=True)
     text = models.CharField(max_length=100, null=True)
     site = models.ForeignKey(Site, on_delete=models.CASCADE)
+    cookie = models.CharField(null= True,max_length=100)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     def __str__(self):
         return self.ip
 
+class Phrases(models.Model):
+    #l'id sera une concaténation du code de la langue et d'un chiffre 
+    id = models.CharField(max_length=100, primary_key=True)
+    intitule = models.CharField(max_length=100, null=True)
