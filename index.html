@@ -180,11 +180,61 @@
             </div>
             <br/>
             <div class="col-md-12 bg-light text-right">
-              <a href="#" id="keys_saved"class="btn btn-primary mb-2 disabled" role="button" aria-disabled="true"onclick="keysAreSaved(event)">I have saved my keys</a>
+              <a   id="keys_saved" class="btn btn-primary mb-2 disabled" role="button" aria-disabled="true">I have saved my keys</a>
             </div>
           </div>
-          <div class="tab-pane fade" id="step3" role="tabpanel" aria-labelledby="step3-tab"></div>
-          <div class="tab-pane fade" id="step4" role="tabpanel" aria-labelledby="step4-tab"></div>
+          <div class="tab-pane fade" id="step3" role="tabpanel" aria-labelledby="step3-tab">
+            <div class="form-group">
+              <textarea class="form-control" id="frontend_display" readonly rows="5" aria-describedby="copy_frontend" style="font-family: monospace;">
+<script>
+$(document).ready(function () {
+    $.ajax('http://127.0.0.1:8000/captcha/getStart/?client_key=inlOpgbwgZ108OX',{
+    type: "GET",
+    success: function(response) {
+      $("#fairCaptcha").append(response);    
+    }}); 
+});
+</script>  
+              </textarea>
+              <small id="copy_frontend" class="form-text text-muted">
+                <a href="javascript:copy_frontend()">copy to clipboard</a>
+              </small>
+            </div>
+            <br/>
+            <div class="col-md-12 bg-light text-right">
+              <a   id="frontend_saved" class="btn btn-primary mb-2" role="button">I have copied source code</a>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="step4" role="tabpanel" aria-labelledby="step4-tab">
+            <div class="form-group">
+              <p>
+                you need to make a request from your backend to check the score of a given user.
+                You must provide:</br>
+                - your client_key</br>
+                - your secret_key</br>
+                - the user's token</br>
+              </p>
+              <p><strong>Example : </strong></p>
+              <textarea class="form-control" id="backend_display" readonly rows="5" aria-describedby="copy_backend" style="font-family: monospace;">
+                $.ajax('http://127.0.0.1:8000/captcha/getScore/', {
+                  type: 'POST',
+                  data: { 
+                      token : $("#token").val(),
+                      secret_key : your secret_key,
+                      client_key : your client_key,
+                  },
+                  success: (data, status, xhr) => {
+                      console.log(data)
+                  },
+                  error: function (jqXhr, textStatus, errorMessage) {
+                      console.log("error")
+              }});
+              </textarea>
+              <small id="copy_backend" class="form-text text-muted">
+                <a href="javascript:copy_backend()">copy to clipboard</a>
+              </small>
+            </div>
+          </div>
         </div>
         
         <!-- <a class="btn btn-primary btn-lg" href="#">Call to Action &raquo;</a>  -->
@@ -244,7 +294,7 @@
     </div>
     <!-- /.container -->
   </footer>
-
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script>
   <script type="text/javascript">
     var key_display = document.getElementById("key_display");
     var generating_keys = false;
@@ -275,6 +325,7 @@
       return false;
     }
     function activate_step(step){
+      console.log(step)
       $("#step"+step+"-tab").removeClass("disabled").click();
     }
     function display_key(text, color){
@@ -345,6 +396,46 @@
           $('#copy_keys a').tooltip('hide')
         }, 2000);
     }
+    
+    function copy_frontend(){
+      var message;
+
+      if (frontend_display.value){
+        frontend_display.select();
+        frontend_display.setSelectionRange(0, 99999); /*For mobile devices*/
+
+        document.execCommand("copy");
+        message = "source code  copied"
+        
+      } else message = "no text to copy";
+
+      $('#copy_frontend a').tooltip({
+          title:message,
+          placement:"bottom",
+          trigger:"manual"
+        }).tooltip('show');
+        setTimeout(function(){
+          $('#copy_frontend a').tooltip('hide')
+        }, 2000);
+    }
+
+    function copy_backend(){
+      var message;
+      if (backend_display.value){
+        backend_display.select();
+        backend_display.setSelectionRange(0, 99999); /*For mobile devices*/
+        document.execCommand("copy");
+        message = "backend text copied"
+      } else message = "no text to copy";
+      $('#copy_backend a').tooltip({
+          title:message,
+          placement:"bottom",
+          trigger:"manual"
+        }).tooltip('show');
+        setTimeout(function(){
+          $('#copy_backend a').tooltip('hide')
+        }, 2000);
+    }
 
     $('#keys_saved').click(
     (event)=>
@@ -352,13 +443,19 @@
         event.preventDefault();
         activate_step(3);
     })
+
+    $('#frontend_saved').click(
+    (event)=>
+    {
+        event.preventDefault();
+        activate_step(4);
+    })
   </script>
 
   <!-- Bootstrap core JavaScript -->
   <!-- <script src="vendor/jquery/jquery.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script> -->
 
-  <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 

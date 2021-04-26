@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Incrave - Responsive Landing Template</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Responsive Multipurpose Creative Landing Page Template" />
+    <meta name="keywords" content="Bootstrap 4, SASS, Clean, Multipurpose, Responsive, Modern" />
+    <meta content="Shreethemes" name="author" />
+    <!-- favicon -->
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <!-- Magnific -->
+    <link href="css/magnific-popup.css" rel="stylesheet" type="text/css" />
+    <!-- Icons -->
+    <link href="css/materialdesignicons.min.css" rel="stylesheet" type="text/css" />
+    <!-- Slider -->               
+    <link rel="stylesheet" href="css/owl.carousel.min.css"/> 
+    <link rel="stylesheet" href="css/owl.theme.default.min.css"/> 
+    <!-- Main Css -->
+    <!-- Custom Css -->
+    <link href="css/style.css" rel="stylesheet" type="text/css" id="theme-opt" />
+    <link href="css/colors/default.css" rel="stylesheet" id="color-opt">
+</head>
+    <body>
+        <div>
+            <p> appel de la page </p>
+        </div>
+        <div id="fairCaptcha" style="padding: 10%;">
+        </div>
+    </body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+    $.ajax('http://127.0.0.1:8000/captcha/getStart/?client_key=inlOpgbwgZ108OX',{
+        type: "GET",
+        success: function(response) {
+        $("#fairCaptcha").append(response);    
+    }}); 
+    });
+</script>
+</html>
