@@ -1,7 +1,11 @@
 {% load static%}
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
+<script>
+    $(document).ready(function () {
+    $("#token").val('{{data.token}}')
+})
+</script>
 {% if data.signaux.request%}
 <script> 
 var addressIpAndMetaData={};
@@ -120,7 +124,7 @@ $(document).ready(function () {
     d= new Date()
     time = d.getTime()
     prevDate = 0
-    jQuery(document).on('click',function(){
+    $(document).on('click',function(){
         d1= new Date()
         time1 = d1.getTime()
         x = event.pageX;
@@ -249,7 +253,6 @@ $(document).ready(function () {
                     <img height="60"  src="https://naruto.voi.ci/images/logo-dark.png"href="https://sense.africa"/>
                   </div> 
                 <div>
-                    <input  id = "token" class="d-none" type="text" value={{data.token}}>
                     <input  id = "client_key" class="d-none" type="text" value={{data.client_key}}>
                 </div>
             </div>
@@ -371,4 +374,6 @@ $("#changeCaptcha").click(
                 }});
     }
 )
+
+
 </script>
