@@ -52,6 +52,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    #Manage static file on heroku
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'api.urls'
@@ -160,3 +162,5 @@ STATICFILES_DIRS = (
     ("images", os.path.join(STATIC_ROOT,'images')),
     ("fonts", os.path.join(STATIC_ROOT,'fonts')),
 )
+
+django_heroku.settings(locals())
