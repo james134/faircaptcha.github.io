@@ -1,8 +1,7 @@
-
+<div class="d-flex justify-content-center">
 <div style="font-family:arial;width:300px;height:100px;border:2px solid #e9ecef;border-radius:5px;border-bottom-left-radius: 5px;border-bottom-right-radius: 5px;color:black;font-size:16px;position:absolute;background:white;overflow:hidden">
        <form >
-            <img src={{data.url}} style="margin: 0%;">
-            <input  id = "token" class="d-none" type="text" value={{data.token}}>
+            <img src={{data.url}} style="margin:0%;">
             <input  id = "client_key" class="d-none" type="text" value={{data.client_key}}>
             <input  id = "ip" class="d-none" type="text" value={{data.ip}}>
             <div  style="display: flex; flex-direction: row;justify-content: center; text-align: center;align-items: center;">
@@ -10,6 +9,7 @@
               <button id="send" style="width: 30%; height: 45px !important;border-bottom-right-radius: 5px;"> Send </button> 
             </div> 
         </form>
+</div>
 </div>
 <script>
   $("#send").click(
