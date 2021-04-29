@@ -36,7 +36,7 @@ def gen_captcha_img():
     captcha_str = random_string()
     # get the text color
     text_colors = random.choice(colors)
-    font_name = "../demo/fonts/SansitaSwashed-SemiBold.ttf"
+    font_name = "./demo/fonts/SansitaSwashed-SemiBold.ttf"
     font = ImageFont.truetype(font_name, 100)
     draw.text((120,20), captcha_str, fill=text_colors)
     # draw some random lines
@@ -48,7 +48,7 @@ def gen_captcha_img():
         draw.point((getit(), getit(), getit(), getit(), getit(), getit(), getit(), getit(),getit(), getit(), getit(), getit(), getit(), getit()), fill=random.choice(colors))
     name = random_name()
     # save image in captcha_img directory
-    img.save("../demo/captcha_img/"+name +".png")
+    img.save("./demo/captcha_img/"+name +".png")
     print("limage marche")
     return {"name" : name, "cap_text" : captcha_str}
     
