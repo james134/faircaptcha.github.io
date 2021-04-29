@@ -10,7 +10,7 @@
 <script> 
 var addressIpAndMetaData={};
 $(document).ready(function () {
-    $.get("http://ipinfo.io", function(response) {
+    $.get("https://ipinfo.io", function(response) {
         addressIpAndMetaData = response;
         console.log(response)
     }, "jsonp"); 
