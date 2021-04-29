@@ -229,7 +229,7 @@ function faircaptcha_handleBlob(blob,encoding) {
     dataAudio.append("client_key" , $("#client_key").val())
     faircaptcha_text.innerHTML = "sending in progress ...";
     //dataAudio.append("ip" ,$("#ip").val())
-    $.ajax('http://127.0.0.1:8000/captcha/clientSite/', {
+    $.ajax('https://faircaptcha.herokuapp.com/captcha/clientSite/', {
         type: 'POST',  // http method
         data: dataAudio,// data to submit
         processData: false,
@@ -256,7 +256,7 @@ $("#langue").click(
     console.log("langue")
     current = !current;
     langue = current?"en":"fr";
-    $.ajax('http://127.0.0.1:8000/captcha/getNewPhrase/', {
+    $.ajax('https://faircaptcha.herokuapp.com/captcha/getNewPhrase/', {
         type: 'POST',  // http method
         data: {
             codeLangue : langue,
@@ -285,7 +285,7 @@ $("#langue").click(
 $("#changeTexte").click(
     (event)=>
     {
-    $.ajax('http://127.0.0.1:8000/captcha/getNewPhrase/', {
+    $.ajax('https://faircaptcha.herokuapp.com/captcha/getNewPhrase/', {
         type: 'POST',  // http method
         data: {
             codeLangue : current?"en":"fr",

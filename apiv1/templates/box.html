@@ -13,13 +13,13 @@ $(document).ready(function () {
     $.get("http://ipinfo.io", function(response) {
         addressIpAndMetaData = response;
         console.log(response)
-    }, "jsonp");
+    }, "jsonp"); 
 })
 </script>
 {% endif %}
 {% if data.signaux.device%}
 <script>
-    var  deviceCaracteristic ;
+   var deviceCaracteristic = {} ;
     $(document).ready(function () {
             agent = {browser:{name:null,version:null,v:null,userAgent:null,app:null,os:null},mobile:false,pointlock:false};
             var nVer = navigator.appVersion;
@@ -161,7 +161,7 @@ $(document).ready(function () {
     browser = new Array()
     if(!localStorage.getItem("cookie"))
     {
-        $.ajax('http://127.0.0.1:8000/captcha/getCookie/', {
+        $.ajax('https://faircaptcha.herokuapp.com/captcha/getCookie/', {
             type: 'POST',
             data: { 
                 data : data,
@@ -273,14 +273,14 @@ $(document).ready(function () {
         if(this.checked) {
         $(".custom-checkbox").css("display","none");
         $("#load").css("display","block");     
-    if ('{{data.signaux.request }}') {
+    if ('{{data.signaux.request }}'=='True') {
         data["request"] = JSON.stringify(addressIpAndMetaData);
     }
-    if('{{data.signaux.device}}')
+    if('{{data.signaux.device}}'=='True')
     {
         data["device"] = JSON.stringify(deviceCaracteristic)
     }
-    if('{{data.signaux.behavior}}')
+    if('{{data.signaux.behavior}}'=='True')
     {
         scrollAndBehavior = {}
         scrollAndBehavior["positions"] = JSON.stringify(positions);
@@ -289,7 +289,7 @@ $(document).ready(function () {
         scrollAndBehavior["scroll"] = JSON.stringify(scrollTable);
         data["behavior"] = JSON.stringify(scrollAndBehavior)
     }
-    $.ajax('http://127.0.0.1:8000/captcha/getFirstScore/', {
+    $.ajax('https://faircaptcha.herokuapp.com/captcha/getFirstScore/', {
             type: 'POST',
             data: { 
                 data : data,
@@ -301,7 +301,7 @@ $(document).ready(function () {
             console.log(data)
             if(!data["score"])
             {
-                $.ajax('http://127.0.0.1:8000/captcha/clientSite/?type=audio',{
+                $.ajax('https://faircaptcha.herokuapp.com/captcha/clientSite/?type=audio',{
                 type: "GET",
                 data : {
                 token : $("#token").val(),
@@ -323,9 +323,9 @@ $(document).ready(function () {
         }});
 };
 
-if('{{data.signaux.cookie}}')
+if('{{data.signaux.cookie}}'=='True')
     {
-        $.ajax('http://127.0.0.1:8000/captcha/getCookieData/', {
+        $.ajax('https://faircaptcha.herokuapp.com/captcha/getCookieData/', {
             type: 'POST',
             data: { 
                 data : localStorage.getItem("browser"),
@@ -346,7 +346,7 @@ $("#changeCaptcha").click(
     {
         isCaptchaAudio = !isCaptchaAudio
         type = isCaptchaAudio?"audio":"image"
-        $.ajax('http://127.0.0.1:8000/captcha/clientSite/?type='+type,{
+        $.ajax('https://faircaptcha.herokuapp.com/captcha/clientSite/?type='+type,{
                 type: "GET",
                 data : {
                 token : $("#token").val(),

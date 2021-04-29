@@ -184,7 +184,7 @@ function faircaptcha_handleBlob(blob,encoding) {
 	document.body.appendChild(au);
 	document.body.appendChild(link);
     
-    $.ajax('http://127.0.0.1:8000/captcha/clientSite/', {
+    $.ajax('https://faircaptcha.herokuapp.com/captcha/clientSite/', {
         type: 'POST',  // http method
         data: { 
             text : $("#text_cap").val(),
