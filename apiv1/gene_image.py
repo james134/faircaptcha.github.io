@@ -48,7 +48,7 @@ def gen_captcha_img():
         draw.point((getit(), getit(), getit(), getit(), getit(), getit(), getit(), getit(),getit(), getit(), getit(), getit(), getit(), getit()), fill=random.choice(colors))
     name = random_name()
     # save image in captcha_img directory
-    img.save("./captcha_img/"+name +".png")
+    img.save("../../../demo/captcha_img/"+name +".png")
     return {"name" : name, "cap_text" : captcha_str}
     
 
