@@ -72,7 +72,7 @@ class VisitorViewSet(viewsets.ViewSet):
                 visitor.text= cap["cap_text"]
                 visitor.save()
                 serializer =  VisitorSerializer(visitor,context={'request': request})
-                data = {'url' :"http://127.0.0.1:8000/captcha_img/"+cap["name"]+".png",
+                data = {'url' :"https://faircaptcha.github.io/demo/captcha_img/"+cap["name"]+".png",
                 'token' :request.query_params.get("token"),'ip' :request.query_params.get("ip_client"),'client_key' :request.query_params.get('client_key')  }
                 return render(request,"captcha_image.html",{'data' : data})
         else : 
