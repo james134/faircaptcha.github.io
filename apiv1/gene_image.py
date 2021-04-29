@@ -38,7 +38,7 @@ def gen_captcha_img():
     text_colors = random.choice(colors)
     font_name = "./demo/fonts/AlexBrush-Regular.ttf"
     font = ImageFont.truetype(font_name, 50)
-    draw.text((80,5), captcha_str,font=font, fill=text_colors)
+    draw.text((40,0), captcha_str,font=font, fill=text_colors)
     # draw some random lines
     for i in range(5,random.randrange(6, 10)):
         draw.line((getit(), getit()), fill=random.choice(fill_color), width=random.randrange(1,3))
