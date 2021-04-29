@@ -36,7 +36,7 @@ def gen_captcha_img():
     captcha_str = random_string()
     # get the text color
     text_colors = random.choice(colors)
-    font_name = "../api/apiv1/fonts/SansitaSwashed-SemiBold.ttf"
+    font_name = "../../../demo/fonts/SansitaSwashed-SemiBold.ttf"
     font = ImageFont.truetype(font_name, 100)
     draw.text((120,20), captcha_str, fill=text_colors)
     # draw some random lines
