@@ -63,7 +63,6 @@ class VisitorViewSet(viewsets.ViewSet):
                 visitor = Visitor.objects.get(token= request.query_params.get("token"))
                 visitor.text= texte
                 visitor.save()
-                print(visitor)
                 data = {'texte':texte,'token' :request.query_params.get("token"),'ip' :request.query_params.get("ip_client"),'client_key' : request.query_params.get('client_key')  }
                 return render(request, "captcha_audio.html",{'data' : data})
             if request.query_params.get('type') =="image": 
