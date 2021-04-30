@@ -251,7 +251,7 @@ function faircaptcha_handleBlob(blob,encoding) {
         },
         error: function (jqXhr, textStatus, errorMessage) {
             $("#a_try").text("failed! try again?"),
-            $("#try_again").css("background-color","#ff1744"); 
+            $("#try_again").css("background-color","#ff1744 !important"); 
             $("#try_again").css("display","block"); 
             $("#micro").css("display","none");
                console.log("error")
