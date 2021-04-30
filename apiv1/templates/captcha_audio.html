@@ -243,7 +243,8 @@ function faircaptcha_handleBlob(blob,encoding) {
         success: function (data, status, xhr) {
          console.log(data)
          $("#a_try").text("Success! replace the audio?"),
-         $("#a_try").css("color","#25b4c9 !important");
+         $("#a_try").css("background-color","#25b4c9");
+         $("#a_try").css("border-color","#25b4c9");
          $("#try_again").css("display","block"); 
          $("#micro").css("display","none"); 
         faircaptcha_text.innerHTML = "Hold icon to record again";
@@ -251,7 +252,8 @@ function faircaptcha_handleBlob(blob,encoding) {
         },
         error: function (jqXhr, textStatus, errorMessage) {
             $("#a_try").text("failed! try again?"),
-            $("#a_try").css("background-color","#ff1744 !important"); 
+            $("#a_try").css("background-color","#ff1744");
+            $("#a_try").css("border-color","#ff1744"); 
             $("#try_again").css("display","block"); 
             $("#micro").css("display","none");
                console.log("error")
