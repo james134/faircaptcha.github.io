@@ -46,7 +46,7 @@
         </div>
         <div id="try_again" style="display: none;">
             <div style="width:100%;position:absolute;bottom:0;left:0;height:50px;border-top:2px solid #e9ecef;overflow:hidden" id="but_again">
-                <a class="btn btn-primary btn-lg"  style="width:100% !important">Success! replace the audio?</a>
+                <a id="a_try" class="btn btn-primary btn-lg"  style="width:100% !important"></a>
             </div>
         </div>
     </div>
@@ -242,12 +242,16 @@ function faircaptcha_handleBlob(blob,encoding) {
         contentType: false,
         success: function (data, status, xhr) {
          console.log(data)
+         $("#a_try").text("Success! replace the audio?"),
          $("#try_again").css("display","block"); 
          $("#micro").css("display","none"); 
         faircaptcha_text.innerHTML = "Hold icon to record again";
          //$("#cap").css("display","none");
         },
         error: function (jqXhr, textStatus, errorMessage) {
+            $("#a_try").text("failed! try again?"),
+            $("#try_again").css("display","block"); 
+            $("#micro").css("display","none");
                console.log("error")
         }  });
 }
